@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCTV Security System • Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #0b0f14 0%, #1a2129 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    /* main card – CCTV console style */
+    .login-card {
+      background: #0e1219;
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(75, 130, 200, 0.15), 0 0 18px rgba(0, 160, 255, 0.2);
+      width: 100%;
+      max-width: 440px;
+      padding: 2rem 2rem 2.2rem;
+      border: 1px solid #2a3745;
+      backdrop-filter: blur(2px);
+      transition: box-shadow 0.2s;
+    }
+
+    .login-card:hover {
+      box-shadow: 0 30px 55px -10px #000000, 0 0 0 1px #3a6d9c, 0 0 24px #0088ff40;
+    }
+
+    /* top bar with time / cctv tag */
+    .cctv-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      color: #8fa8c0;
+      border-bottom: 1px solid #1f2b36;
+      padding-bottom: 1rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    .timestamp {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: #0a0f14;
+      padding: 0.2rem 0.7rem;
+      border-radius: 40px;
+      border: 1px solid #1e2d3c;
+      color: #b0d4ff;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .timestamp::before {
+      content: "⏺";
+      color: #ff3b3b;
+      font-size: 0.7rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    .cctv-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #121b24;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      border: 1px solid #2b3f52;
+      font-weight: 500;
+      color: #7ca9d9;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .cctv-badge span {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    /* title */
+    .system-title {
+      margin-bottom: 1.75rem;
+    }
+
+    .system-title h1 {
+      color: #e5edf5;
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .system-title h1 span {
+      background: #0f1b26;
+      padding: 6px 8px 4px 8px;
+      border-radius: 16px;
+      font-size: 1.4rem;
+      line-height: 1;
+      border: 1px solid #2a4055;
+    }
+
+    .system-title .subhead {
+      color: #5f7f9c;
+      font-size: 0.95rem;
+      margin-top: 6px;
+      letter-spacing: 0.2px;
+      border-left: 3px solid #1c6fb0;
+      padding-left: 12px;
+      font-weight: 400;
+    }
+
+    /* form fields */
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #7a9ab8;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: #0b1117;
+      border: 1px solid #263545;
+      border-radius: 16px;
+      transition: border 0.15s, box-shadow 0.15s;
+    }
+
+    .input-wrapper:focus-within {
+      border-color: #328fdb;
+      box-shadow: 0 0 0 3px rgba(45, 140, 220, 0.2);
+    }
+
+    .input-wrapper input {
+      background: transparent;
+      border: none;
+      padding: 1rem 1rem 1rem 1rem;
+      width: 100%;
+      font-size: 1rem;
+      color: #eef4fc;
+      outline: none;
+      border-radius: 16px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrapper input::placeholder {
+      color: #3d5468;
+      font-weight: 400;
+      font-size: 0.9rem;
+    }
+
+    /* password eye */
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      background: transparent;
+      border: none;
+      color: #54728c;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: all 0.1s;
+      text-transform: uppercase;
+      line-height: 1;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .toggle-password:hover {
+      color: #a0c8f0;
+      background: #1b2632;
+      border-color: #2f4b66;
+    }
+
+    .toggle-password:active {
+      transform: scale(0.96);
+    }
+
+    /* log in button */
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0e2a40 0%, #113a55 100%);
+      border: 1px solid #286a9c;
+      color: #d7ecff;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 1rem 1.5rem;
+      border-radius: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.7px;
+      margin-top: 0.5rem;
+      margin-bottom: 1.2rem;
+      transition: all 0.18s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px #1a3b55 inset;
+    }
+
+    .login-btn:hover {
+      background: linear-gradient(135deg, #123b57 0%, #15507a 100%);
+      border-color: #3b8fd4;
+      box-shadow: 0 8px 18px #00000060, 0 0 14px #0070e0;
+      color: #ffffff;
+    }
+
+    .login-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* demo credentials row */
+    .demo-credentials {
+      background: #0a1017;
+      border: 1px solid #1d2d3d;
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #7f9bb8;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .demo-credentials .label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #4e7799;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.6px;
+      font-weight: 600;
+    }
+
+    .demo-credentials .cred {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: #0b141e;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      border: 1px solid #263f56;
+      color: #a7cfee;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    .demo-credentials .cred span {
+      color: #6f9ac9;
+    }
+
+    /* error message */
+    .error-message {
+      color: #ff7777;
+      background: #1f1418;
+      border-left: 4px solid #d44;
+      padding: 0.65rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .error-message.show {
+      display: flex;
+    }
+
+    .error-message::before {
+      content: "⚠️";
+      font-size: 1rem;
+    }
+
+    /* footer */
+    .footer-note {
+      text-align: center;
+      margin-top: 1.7rem;
+      color: #3b5771;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-top: 1px solid #1c2938;
+      padding-top: 1.2rem;
+    }
+
+    /* for successful login state (overlay demo) */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000000e0;
+      backdrop-filter: blur(12px);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    .success-card {
+      background: #0c1a24;
+      border: 1px solid #2c7f4c;
+      border-radius: 36px;
+      padding: 2.5rem 3rem;
+      text-align: center;
+      max-width: 380px;
+      box-shadow: 0 0 60px #00c3ff40;
+    }
+
+    .success-card h2 {
+      color: #b6f0d0;
+      font-size: 2rem;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .success-card p {
+      color: #7da3b0;
+      font-family: monospace;
+      margin-bottom: 24px;
+    }
+
+    .success-card button {
+      background: #1d4e3a;
+      border: 1px solid #3da86c;
+      color: #dcffe9;
+      padding: 12px 26px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .success-card button:hover {
+      background: #1f6a4b;
+    }
+  </style>
+</head>
+<body>
+  <!-- main login card -->
+  <div class="login-card">
+    <!-- header: time & cctv -->
+    <div class="cctv-header">
+      <div class="timestamp" id="liveTimestamp">14:04:16</div>
+      <div class="cctv-badge"><span>📹</span> CCTV • SECURE</div>
+    </div>
+
+    <!-- title area -->
+    <div class="system-title">
+      <h1>
+        <span>🔒</span> Security System
+      </h1>
+      <div class="subhead">Sign in to access the surveillance console.</div>
+    </div>
+
+    <!-- error message -->
+    <div class="error-message" id="errorMsg">
+      Invalid credentials. Try again.
+    </div>
+
+    <!-- login form -->
+    <form id="loginForm">
+      <!-- username -->
+      <div class="input-group">
+        <label for="username">Username</label>
+        <div class="input-wrapper">
+          <input type="text" id="username" placeholder="e.g. admin" autocomplete="off" value="admin">
+        </div>
+      </div>
+
+      <!-- password with show/hide -->
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper password-wrapper">
+          <input type="password" id="password" placeholder="••••••••" autocomplete="off" value="admin123">
+          <button type="button" class="toggle-password" id="togglePasswordBtn">SHOW</button>
+        </div>
+      </div>
+
+      <!-- login button -->
+      <button type="submit" class="login-btn">
+        <span>⏎</span> Log in
+      </button>
+    </form>
+
+    <!-- demo credentials row -->
+    <div class="demo-credentials">
+      <div class="label"><span>🔑</span> Demo credentials</div>
+      <div class="cred">admin <span>·</span> admin123</div>
+    </div>
+
+    <!-- small footer note -->
+    <div class="footer-note">
+      CCTV‑SURV · AUTHENTICATION REQUIRED
+    </div>
+  </div>
+
+  <!-- simple success overlay (for demonstration) -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-card">
+      <h2>✔ Access granted</h2>
+      <p>Surveillance console ready</p>
+      <button id="closeOverlayBtn">Return to login</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ----- update the timestamp like a CCTV clock (14:04:16 style) -----
+      const timestampEl = document.getElementById('liveTimestamp');
+
+      function updateTimestamp() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        timestampEl.textContent = `${hours}:${minutes}:${seconds}`;
+      }
+
+      updateTimestamp();
+      setInterval(updateTimestamp, 1000);
+
+      // ----- password show/hide toggle -----
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.getElementById('togglePasswordBtn');
+
+      toggleBtn.addEventListener('click', function() {
+        const currentType = passwordInput.getAttribute('type');
+        if (currentType === 'password') {
+          passwordInput.setAttribute('type', 'text');
+          toggleBtn.textContent = 'HIDE';
+        } else {
+          passwordInput.setAttribute('type', 'password');
+          toggleBtn.textContent = 'SHOW';
+        }
+      });
+
+      // ----- login form handling -----
+      const form = document.getElementById('loginForm');
+      const usernameInput = document.getElementById('username');
+      const errorMsg = document.getElementById('errorMsg');
+      const successOverlay = document.getElementById('successOverlay');
+      const closeOverlayBtn = document.getElementById('closeOverlayBtn');
+
+      // demo credentials
+      const DEMO_USER = 'admin';
+      const DEMO_PASS = 'admin123';
+
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // prevent page reload
+
+        const enteredUsername = usernameInput.value.trim();
+        const enteredPassword = passwordInput.value; // don't trim passwords
+
+        // simple credential check
+        if (enteredUsername === DEMO_USER && enteredPassword === DEMO_PASS) {
+          // success — hide error and show success overlay
+          errorMsg.classList.remove('show');
+          successOverlay.style.display = 'flex';
+
+          // optional: keep the login card visible behind overlay
+          // no redirect, just demo effect
+        } else {
+          // show error
+          errorMsg.classList.add('show');
+          // also clear password field? optional — we keep it but can clear
+          // passwordInput.value = '';  // but we keep for convenience, not needed
+          // also make error shake? (optional)
+        }
+      });
+
+      // close overlay (return to login)
+      closeOverlayBtn.addEventListener('click', function() {
+        successOverlay.style.display = 'none';
+        // reset error message if any
+        errorMsg.classList.remove('show');
+        // Optionally focus on username
+        usernameInput.focus();
+      });
+
+      // hide error when user starts typing (clean UX)
+      usernameInput.addEventListener('input', function() {
+        errorMsg.classList.remove('show');
+      });
+
+      passwordInput.addEventListener('input', function() {
+        errorMsg.classList.remove('show');
+      });
+
+      // click on overlay background closes it? (optional)
+      successOverlay.addEventListener('click', function(e) {
+        if (e.target === successOverlay) {
+          successOverlay.style.display = 'none';
+        }
+      });
+
+      // prefill demo values for convenience (already in HTML but just in case)
+      // This ensures they are set after page load
+      window.addEventListener('load', function() {
+        // if fields are empty, set demo defaults (but we have them in HTML)
+        if (!usernameInput.value) usernameInput.value = 'admin';
+        if (!passwordInput.value) passwordInput.value = 'admin123';
+      });
+    })();
+  </script>
+</body>
+</html>
